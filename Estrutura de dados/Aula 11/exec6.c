@@ -21,7 +21,9 @@ typedef struct pessoas {
 	struct pessoas* prox;
 }PESSOAS;
 
+void imprimeLista(PESSOAS* lista);
 int getSizePessoas(PESSOAS* lista);
+PESSOAS* inserir (PESSOAS* l, char nome[]);
 
 int main(void){
 	//variaveis
@@ -32,6 +34,7 @@ int main(void){
 	PESSOAS* aux2;	
 	PESSOAS* aux3;	
 	int i, op, qtd_lista;
+	char nome[50];
 	
 	
 	do{
@@ -42,58 +45,34 @@ int main(void){
 		printf("5 - Sair\n");
 		printf("opcao: ");		
 		scanf("%i",&op);
+		fflush(stdin);
 		
 		system("cls");	
 		
 		switch(op){
 			case 1:
-				printf("tamanho da lista 1: ");
-				scanf("%i",&qtd_lista);
+				printf("Nome: ");
+				gets(nome);
 				fflush(stdin);
 				
-				for(i = 0; i < qtd_lista; i++){
-					PESSOAS* pessoa = (PESSOAS*) malloc(sizeof(PESSOAS));
-					printf("Pessoa %i: ",i+1);
-					gets(pessoa->nome);
-					fflush(stdin);
-					
-					if(L1 == NULL){
-						L1 = pessoa;
-						pessoa->prox = NULL;
-					} else {
-						pessoa->prox = L1;
-						L1 = pessoa;
-					}
-				}
+				L1 = inserir(L1, nome);
 				system("cls");	
 				
 				break;
 			case 2:
-				printf("tamanho da lista 2: ");
-				scanf("%i",&qtd_lista);
+				printf("Nome: ");
+				gets(nome);
 				fflush(stdin);
 				
-				for(i = 0; i < qtd_lista; i++){
-					PESSOAS* pessoa = (PESSOAS*) malloc(sizeof(PESSOAS));
-					printf("Pessoa %i: ",i+1);
-					gets(pessoa->nome);
-					
-					if(L2 == NULL){
-						L2 = pessoa;
-						pessoa->prox = NULL;
-					} else {
-						pessoa->prox = L2;
-						L2 = pessoa;
-					}
-				}				
-				system("cls");	
+				L2 = inserir(L2, nome);
+				system("cls");		
 				
 				break;
 			case 3:
 				if(L1 == NULL){
-					printf("Lista 1 está vazia!");
+					printf("Lista 1 está vazia!\n");
 				} else if (L2 == NULL){
-					printf("Lista 2 está vazia!");
+					printf("Lista 2 está vazia!\n\n");
 				} else {
 					
 					if(getSizePessoas(L1) < getSizePessoas(L2)){
@@ -103,17 +82,20 @@ int main(void){
 						
 						while(aux1 != NULL){
 							while(aux2 != NULL){
-								if(aux1->nome == aux2->nome){
+								if(!strcmp(aux1->nome,aux2->nome)){
 									PESSOAS* pessoa = (PESSOAS*) malloc(sizeof(PESSOAS));
-									strcpy(pessoa->nome,aux2->nome);
+									strcpy(pessoa->nome,aux1->nome);
 									
-									if(L3 == NULL){
-										pessoa->prox = NULL;
-										L3 = pessoa;
-									} else {
-										pessoa->prox = L3;
-										L3 = pessoa;
+									if(strcmp(pessoa->nome,'\0')){
+										if(L3 == NULL){
+											L3 = pessoa;
+											pessoa->prox = NULL;
+										} else {
+											pessoa->prox = L3;
+											L3 = pessoa;
+										}
 									}
+									
 								}
 								
 								aux2 = aux2->prox;
@@ -128,7 +110,7 @@ int main(void){
 						
 						while(aux2 != NULL){
 							while(aux1 != NULL){
-								if(aux1->nome == aux2->nome){
+								if(!strcmp(aux1->nome,aux2->nome)){
 									PESSOAS* pessoa = (PESSOAS*) malloc(sizeof(PESSOAS));
 									strcpy(pessoa->nome,aux1->nome);
 									if(L3 == NULL){
@@ -147,20 +129,15 @@ int main(void){
 						}
 					}
 				}	
-				system("cls");
 				
 				break;
-			case 4:
-				if(L3 == NULL){
-					printf("Lista 3 está vazia");
-				} else {
-					aux3 = L3;
-					
-					while(aux3 != NULL){
-						printf("Nome: %s", aux3->nome);
-						aux3 = aux3->prox;
-					}
-				}
+			case 4:				
+				printf("L1: \n");
+				imprimeLista(L1);
+				printf("L2: \n");
+				imprimeLista(L2);
+				printf("L3: \n");
+				imprimeLista(L3);
 				
 				break;
 			case 5:
@@ -173,6 +150,22 @@ int main(void){
 	}while(op != 5);
 	
 	return 0;
+}
+
+void imprimeLista(PESSOAS* lista){
+	PESSOAS* aux_func;
+	
+	if(lista == NULL){
+		printf("Lista está vazia");
+	} else {
+		aux_func = lista;
+		
+		while(aux_func != NULL){
+			printf("Nome: %s\n", aux_func->nome);
+			aux_func = aux_func->prox;
+		}
+	}
+	printf("\n\n");
 }
 
 int getSizePessoas(PESSOAS* lista){
@@ -191,4 +184,22 @@ int getSizePessoas(PESSOAS* lista){
 		
 		return cont;
 	}	
+}
+
+PESSOAS* inserir (PESSOAS *l, char nome[]){
+	PESSOAS *aux;
+	PESSOAS *novo = (PESSOAS*) malloc(sizeof(PESSOAS));
+	strcpy(novo->nome, nome);
+	novo->prox = NULL;
+	
+	if (l == NULL) {
+        l = novo;
+    } else {
+        aux = l;
+        while (aux->prox != NULL) {
+            aux = aux->prox;
+        }
+        aux->prox = novo;
+    }
+    return l;
 }
